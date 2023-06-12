@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MyBottomNavBar" parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">#FFFFFF</item>
+        <item name="itemTextAppearanceActive">@style/MyText</item>
+        <item name="itemIconTint">@color/my_color_icontint_navigationbottom</item>
+        <item name="itemTextColor">@color/my_color_icontint_navigationbottom</item>
+        <item name="itemActiveIndicatorStyle">@style/MyActiveIndicator</item>
+        <item name="labelVisibilityMode">labeled</item>
+
+    </style>
+
+    <style name="MyActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#FFFFFF</item>
+    </style>
+
+    <style name="MyText" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="helperTextTextColor">#3364E0</item>
+        <item name="boxBackgroundColor">#3364E0</item>
+        <item name="colorOnSurface">#3364E0</item>
+        <item name="placeholderTextAppearance">@style/MyTextAppearance</item>
+        <item name="helperTextTextAppearance">@style/MyTextAppearance</item>
+        <item name="shapeAppearanceOverlay">@style/MyTextAppearance</item>
+        <item name="hintTextAppearance">@style/MyTextAppearance</item>
+        <item name="counterTextAppearance">@style/MyTextAppearance</item>
+        <item name="counterOverflowTextAppearance">@style/MyTextAppearance</item>
+
+    </style>
+
+    <style name="MyTextAppearance" parent="TextAppearance.MaterialComponents.Body2">
+
+        <item name="android:textSize">10sp</item>
+        <item name="android:letterSpacing">0.0178571429</item>
+    </style>
+
+
+
+</resources>

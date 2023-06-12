@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/main"
+        android:title="@string/main"
+        android:visible="true"
+        android:menuCategory="secondary"
+        android:icon="@drawable/ic_main" />
+
+    <item android:id="@+id/search"
+        android:title="@string/search"
+        android:visible="true"
+        android:menuCategory="secondary"
+        android:icon="@drawable/ic_search" />
+
+    <item android:id="@+id/my_card"
+        android:title="@string/my_card"
+        android:menuCategory="secondary"
+        android:icon="@drawable/ic_my_card" />
+
+    <item android:id="@+id/my_account"
+        android:title="@string/my_account"
+        android:menuCategory="secondary"
+        android:icon="@drawable/ic_profile" />
+</menu>

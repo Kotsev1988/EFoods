@@ -1,0 +1,6 @@
+<resources>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="already_exist">Блюдо добавлено в корзину</string>
+    <string name="addToMyCard">Добавить в корзину</string>
+</resources>

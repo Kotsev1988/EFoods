@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="roundedButtonCornerMyCard" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">10sp</item>
+        <item name="backgroundTint">@color/my_card_button_color_background</item>
+        <item name="android:textColor">@color/my_card_button_text_color</item>
+    </style>
+
+    <style name="roundedImageButtonLeft" parent="Widget.AppCompat.ImageButton">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">10dp</item>
+        <item name="cornerSizeBottomLeft">10dp</item>
+        <item name="backgroundTint">#EFEEEC</item>
+    </style>
+
+    <style name="roundedImageButtonRight" parent="Widget.AppCompat.ImageButton">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">10dp</item>
+        <item name="cornerSizeBottomRight">10dp</item>
+        <item name="backgroundTint">#EFEEEC</item>
+
+    </style>
+
+    </resources>
