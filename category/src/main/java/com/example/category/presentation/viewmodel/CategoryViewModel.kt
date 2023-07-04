@@ -4,21 +4,20 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.category.presentation.view.ListDishes
 import com.example.category.presentation.view.ListMenu
 import com.example.category.presentation.viewmodel.appState.CategoryAppState
-import com.example.core.domain.entity.Category
-import com.example.core.domain.entity.Dishe
-import com.example.core.domain.entity.MenuCategory
-import com.example.core.domain.entity.Menus
-import com.example.core.domain.entity.repository.IGetDishes
-import com.example.core.domain.myCard.IMyCardProducts
+import com.example.domain.entity.Category
+import com.example.domain.entity.Dishe
+import com.example.domain.entity.MenuCategory
+import com.example.domain.repository.IGetDishes
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
+import javax.inject.Provider
 
-class CategoryViewModel @Inject constructor(
-    var productList: IGetDishes,
-    private val myCard: IMyCardProducts,
+class CategoryViewModel(
+    var productList: IGetDishes
 ) : ViewModel() {
 
     private val _lists: MutableLiveData<CategoryAppState> = MutableLiveData()
@@ -27,13 +26,13 @@ class CategoryViewModel @Inject constructor(
             return _lists
         }
 
-     val listMenu = ListMenu()
-     val listDishes = ListDishes()
+     private val listMenu = ListMenu()
+     private val listDishes = ListDishes()
 
-    var dishes: ArrayList<Dishe> = arrayListOf()
+    private var dishes: ArrayList<Dishe> = arrayListOf()
 
     val menus :HashSet<String> = hashSetOf()
-    val menuCategory = MenuCategory()
+    private val menuCategory = MenuCategory()
 
 
     fun init() {
@@ -119,6 +118,16 @@ class CategoryViewModel @Inject constructor(
             {
                 _lists.value = it.message?.let { it1 -> CategoryAppState.Error(it1) }
             })
+    }
+
+    class Factory @Inject constructor(
+        private val productList: Provider<IGetDishes>
+    ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            require(modelClass == CategoryViewModel::class.java)
+            return CategoryViewModel(productList.get()) as T
+        }
     }
 
 }

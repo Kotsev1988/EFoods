@@ -1,35 +1,30 @@
 package com.example.category.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment.STYLE_NORMAL
-import androidx.fragment.app.DialogFragment.STYLE_NO_FRAME
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import com.example.category.R
+import androidx.lifecycle.get
 import com.example.category.databinding.FragmentCategoryBinding
-import com.example.category.di.DaggerCategoryComponent
+import com.example.category.di.ArticlesComponentViewModel
 import com.example.category.presentation.adapters.MainAdapter
 import com.example.category.presentation.adapters.dishes.DishesDelegate
 import com.example.category.presentation.adapters.dishes.DishesDelegateAdapter
 import com.example.category.presentation.adapters.menus.CategoriesDelegate
 import com.example.category.presentation.adapters.menus.CategoriesDelegateAdapter
-import com.example.category.presentation.view.ListDishes
-import com.example.category.presentation.view.ListMenu
 import com.example.category.presentation.viewmodel.CategoryViewModel
 import com.example.category.presentation.viewmodel.appState.CategoryAppState
-import com.example.core.domain.entity.Dishe
-import com.example.core.domain.entity.MenuCategory
-import com.example.core.domain.entity.Menus
-import com.example.core.utils.InjectUtils
 import javax.inject.Inject
 
-const val KAY_PARENT_DIALOG = "key_parent_dialog"
 const val KAY_PARENT = "key_parent"
+
+const val KAY_PARENT_DIALOG = "key_parent_dialog"
 class CategoryFragment : Fragment() {
     private var _binding: FragmentCategoryBinding? = null
     private val binding get() = _binding!!
@@ -42,16 +37,22 @@ class CategoryFragment : Fragment() {
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    internal lateinit var viewModelFactory: dagger.Lazy<CategoryViewModel.Factory>
 
-    private val viewModel: CategoryViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[CategoryViewModel::class.java]
+    private val viewModel: CategoryViewModel by viewModels {
+        viewModelFactory.get()
+    }
+
+
+
+    override fun onAttach(context: Context) {
+        ViewModelProvider(this).get<ArticlesComponentViewModel>()
+            .newDetailsComponent.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        DaggerCategoryComponent.factory()
-            .create(InjectUtils.provideBaseComponent(requireActivity().applicationContext))
-            .inject(this)
+
         super.onCreate(savedInstanceState)
 
     }
@@ -87,7 +88,7 @@ class CategoryFragment : Fragment() {
 
         when (it) {
             is CategoryAppState.OnSuccess ->{
-                val menu = Menus(arrayListOf())
+                val menu = com.example.domain.entity.Menus(arrayListOf())
                 menu.dishes.addAll(it.dishes)
 
 
@@ -102,7 +103,7 @@ class CategoryFragment : Fragment() {
             }
 
             is CategoryAppState.SetDishes ->{
-                val menu = Menus(arrayListOf())
+                val menu = com.example.domain.entity.Menus(arrayListOf())
                 menu.dishes.addAll(it.dishes)
 
                 val  listDelegates = listOf(
@@ -126,7 +127,7 @@ class CategoryFragment : Fragment() {
 
     private lateinit var fragmentDialog: DetailFragment
 
-    private fun showFragmentDialog(dish: Dishe) {
+    private fun showFragmentDialog(dish: com.example.domain.entity.Dishe) {
         fragmentDialog = DetailFragment.newInstance(dish)
         fragmentDialog.show(this.childFragmentManager, "tag")
 

@@ -1,9 +1,8 @@
 package com.example.category.presentation.adapters.menus
 
+import com.example.domain.entity.MenuCategory
 import com.example.category.presentation.adapters.DelegateAdapterItem
 import com.example.category.presentation.view.lists.IListMenu
-import com.example.core.domain.entity.MenuCategory
-import com.example.core.domain.entity.Menus
 
 data class CategoriesDelegate(
     val menus: MenuCategory,

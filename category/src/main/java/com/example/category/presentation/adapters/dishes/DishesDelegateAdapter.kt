@@ -3,12 +3,9 @@ package com.example.category.presentation.adapters.dishes
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.category.databinding.ItemFoodBinding
 import com.example.category.databinding.ItemFoodsBinding
 import com.example.category.presentation.adapters.DelegateAdapter
 import com.example.category.presentation.adapters.DelegateAdapterItem
-import com.example.core.domain.entity.Dishe
-import com.example.core.domain.entity.Menus
 
 class DishesDelegateAdapter :
     DelegateAdapter<DishesDelegate, DishesDelegateAdapter.DishesViewHolder>(

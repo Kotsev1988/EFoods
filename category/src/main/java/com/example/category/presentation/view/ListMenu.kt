@@ -1,8 +1,8 @@
 package com.example.category.presentation.view
 
 import android.view.View
+import com.example.domain.entity.MenuCategory
 import com.example.category.presentation.view.lists.IListMenu
-import com.example.core.domain.entity.MenuCategory
 
 class ListMenu(): IListMenu {
     override var itemClickListenerMenu: ((View) -> Unit)? = null
@@ -12,7 +12,7 @@ class ListMenu(): IListMenu {
 
     override fun bindView(view: IMenuItemView) {
 
-        var menu = menuCategory[view.pos]
+        val menu = menuCategory[view.pos]
 
         view.setText(menu.name)
         view.clickButton()

@@ -14,7 +14,10 @@ dependencyResolutionManagement {
 }
 rootProject.name = "EFoods"
 include ':app'
-include ':main'
-include ':mycard'
-include ':core'
+include ':base'
 include ':category'
+include ':api'
+include ':domain'
+include ':myCard'
+include ':data'
+include ':core'

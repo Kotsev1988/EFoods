@@ -11,11 +11,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/api" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/base" />
             <option value="$PROJECT_DIR$/category" />
             <option value="$PROJECT_DIR$/core" />
-            <option value="$PROJECT_DIR$/main" />
-            <option value="$PROJECT_DIR$/mycard" />
+            <option value="$PROJECT_DIR$/data" />
+            <option value="$PROJECT_DIR$/domain" />
+            <option value="$PROJECT_DIR$/myCard" />
           </set>
         </option>
       </GradleProjectSettings>

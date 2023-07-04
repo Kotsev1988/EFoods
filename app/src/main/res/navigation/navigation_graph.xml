@@ -3,16 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation_graph"
     app:startDestination="@id/mainFragment">
-    <include app:graph="@navigation/main_navigation" />
-    <include app:graph="@navigation/navigation_dishes" />
-    <include app:graph="@navigation/mycard_navigation" />
-
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.main.presentation.fragments.MainFragment"
-        android:label="MainFragment" />
+        android:name="com.example.category.presentation.fragments.CategoryFragment"
+        android:label="CategoryFragment" />
     <fragment
         android:id="@+id/my_card"
         android:name="com.example.mycard.presentation.fragments.MyCardFragment"
         android:label="MyCardFragment" />
+
+
 </navigation>

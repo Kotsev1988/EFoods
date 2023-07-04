@@ -1,10 +1,6 @@
 package com.example.category.presentation.viewmodel.appState
 
-import com.example.category.presentation.view.ListDishes
-import com.example.category.presentation.view.ListMenu
-import com.example.category.presentation.view.lists.IDishesList
-import com.example.core.domain.entity.Dishe
-import com.example.core.domain.entity.MenuCategory
+import com.example.domain.entity.Dishe
 
 sealed class DetailAppState{
 

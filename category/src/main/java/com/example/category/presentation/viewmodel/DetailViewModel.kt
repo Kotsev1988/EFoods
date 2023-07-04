@@ -4,13 +4,15 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.category.presentation.viewmodel.appState.DetailAppState
-import com.example.core.domain.entity.Dishe
-import com.example.core.domain.myCard.IMyCardProducts
+import com.example.domain.entity.Dishe
+import com.example.domain.repository.IMyCardProducts
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
+import javax.inject.Provider
 
-class DetailViewModel @Inject constructor(
+class DetailViewModel (
     private val myCard: IMyCardProducts
 ): ViewModel() {
 
@@ -43,7 +45,7 @@ class DetailViewModel @Inject constructor(
             })
     }
 
-    fun addToCard() {
+     fun addToCard() {
         myCard.let {
             myCard.insertProductToMyCard(dishe).observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -53,5 +55,15 @@ class DetailViewModel @Inject constructor(
                 })
         }
 
+    }
+
+    class Factory @Inject constructor(
+        private val myCard: Provider<IMyCardProducts>
+    ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            require(modelClass == DetailViewModel::class.java)
+            return DetailViewModel(myCard.get()) as T
+        }
     }
 }

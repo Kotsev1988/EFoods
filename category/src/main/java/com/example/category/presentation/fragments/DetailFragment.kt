@@ -1,5 +1,6 @@
 package com.example.category.presentation.fragments
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -10,15 +11,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import com.bumptech.glide.Glide
 import com.example.category.R
 import com.example.category.databinding.FragmentDetailBinding
-import com.example.category.di.DaggerCategoryComponent
+import com.example.category.di.ArticlesComponentViewModel
 import com.example.category.presentation.viewmodel.DetailViewModel
 import com.example.category.presentation.viewmodel.appState.DetailAppState
-import com.example.core.domain.entity.Dishe
-import com.example.core.utils.InjectUtils
+import com.example.domain.entity.Dishe
 import javax.inject.Inject
 
 class DetailFragment : DialogFragment() {
@@ -26,22 +28,21 @@ class DetailFragment : DialogFragment() {
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
+
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    internal lateinit var viewModelFactory: dagger.Lazy<DetailViewModel.Factory>
 
-    private val viewModel: DetailViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[DetailViewModel::class.java]
+    private val viewModel: DetailViewModel by viewModels {
+        viewModelFactory.get()
     }
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-        DaggerCategoryComponent.factory()
-            .create(InjectUtils.provideBaseComponent(requireActivity().applicationContext))
-            .inject(this)
-        super.onCreate(savedInstanceState)
-
+    override fun onAttach(context: Context) {
+        ViewModelProvider(this).get<ArticlesComponentViewModel>()
+            .newDetailsComponent.inject(this)
+        super.onAttach(context)
     }
+
 
     override fun getTheme(): Int  = R.style.RoundedDialogStyle
 

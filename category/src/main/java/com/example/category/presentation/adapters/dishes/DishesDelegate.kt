@@ -2,7 +2,7 @@ package com.example.category.presentation.adapters.dishes
 
 import com.example.category.presentation.adapters.DelegateAdapterItem
 import com.example.category.presentation.view.lists.IDishesList
-import com.example.core.domain.entity.Menus
+import com.example.domain.entity.Menus
 
 class DishesDelegate(
     val dishes: Menus,

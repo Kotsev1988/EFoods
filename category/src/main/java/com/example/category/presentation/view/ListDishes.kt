@@ -1,7 +1,7 @@
 package com.example.category.presentation.view
 
 import com.example.category.presentation.view.lists.IDishesList
-import com.example.core.domain.entity.Dishe
+import com.example.domain.entity.Dishe
 
 class ListDishes(): IDishesList {
     override var itemClickListener: ((IDishItemView) -> Unit)? = null

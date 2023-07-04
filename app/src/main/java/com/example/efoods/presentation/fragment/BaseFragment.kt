@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -21,7 +20,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.Date
 
-const val KAY_PARENT = "key_parent"
 const val REQUEST_CODE = 30
 
 class BaseFragment : Fragment() {
@@ -31,10 +29,12 @@ class BaseFragment : Fragment() {
 
     var city = ""
 
-    private val clickListener = OnClickListener { childFragmentManager.popBackStack() }
-
     private val viewModel: BaseViewModel by lazy {
         ViewModelProvider(this)[BaseViewModel::class.java]
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -61,50 +61,50 @@ class BaseFragment : Fragment() {
             renderData(it)
         }
 
-        checkPermission()
-        childFragmentManager.setFragmentResultListener(KAY_PARENT, this) { _, result ->
-
-            var resultFromBundle = result.getString("headerText")
-
-            if (resultFromBundle == "location") {
-                if (city == "") {
-
-                    binding.kitchenNameHeader.visibility = View.GONE
-                    binding.myTime.visibility = View.VISIBLE
-                    binding.myLocation.visibility = View.VISIBLE
-
-                    val sdf = SimpleDateFormat("dd MMMM, yyyy")
-                    val currentDateAndTime = sdf.format(Date())
-
-                    binding.myLocation.text = city
-                    binding.myTime.text = currentDateAndTime
-                    binding.backButton.setImageResource(R.drawable.ic_location)
-                    binding.backButton.setOnClickListener(null)
-                } else {
-                    binding.myTime.visibility = View.VISIBLE
-                    binding.myLocation.visibility = View.VISIBLE
-                    binding.kitchenNameHeader.visibility = View.GONE
-
-                    val sdf = SimpleDateFormat("dd MMMM, yyyy")
-                    val currentDateAndTime = sdf.format(Date())
-
-                    binding.myLocation.text = city
-                    binding.myTime.text = currentDateAndTime
-                    binding.backButton.setImageResource(R.drawable.ic_location)
-                    binding.backButton.setOnClickListener(null)
-                }
-            } else {
-
-                binding.kitchenNameHeader.visibility = View.VISIBLE
-                binding.myLocation.visibility = View.GONE
-                binding.myTime.visibility = View.GONE
-                binding.backButton.setImageResource(R.drawable.ic_back)
-
-                binding.backButton.setOnClickListener(clickListener)
-
-                binding.kitchenNameHeader.text = result.getString("headerText")
-            }
-        }
+        //checkPermission()
+//        childFragmentManager.setFragmentResultListener(KAY_PARENT, this) { _, result ->
+//
+//            var resultFromBundle = result.getString("headerText")
+//
+//            if (resultFromBundle == "location") {
+//                if (city == "") {
+//
+//                    binding.kitchenNameHeader.visibility = View.GONE
+//                    binding.myTime.visibility = View.VISIBLE
+//                    binding.myLocation.visibility = View.VISIBLE
+//
+//                    val sdf = SimpleDateFormat("dd MMMM, yyyy")
+//                    val currentDateAndTime = sdf.format(Date())
+//
+//                    binding.myLocation.text = city
+//                    binding.myTime.text = currentDateAndTime
+//                    binding.backButton.setImageResource(R.drawable.ic_location)
+//                    binding.backButton.setOnClickListener(null)
+//                } else {
+//                    binding.myTime.visibility = View.VISIBLE
+//                    binding.myLocation.visibility = View.VISIBLE
+//                    binding.kitchenNameHeader.visibility = View.GONE
+//
+//                    val sdf = SimpleDateFormat("dd MMMM, yyyy")
+//                    val currentDateAndTime = sdf.format(Date())
+//
+//                    binding.myLocation.text = city
+//                    binding.myTime.text = currentDateAndTime
+//                    binding.backButton.setImageResource(R.drawable.ic_location)
+//                    binding.backButton.setOnClickListener(null)
+//                }
+//            } else {
+//
+//                binding.kitchenNameHeader.visibility = View.VISIBLE
+//                binding.myLocation.visibility = View.GONE
+//                binding.myTime.visibility = View.GONE
+//                binding.backButton.setImageResource(R.drawable.ic_back)
+//
+//                binding.backButton.setOnClickListener(clickListener)
+//
+//                binding.kitchenNameHeader.text = result.getString("headerText")
+//            }
+//        }
     }
 
     private fun renderData(it: AppStateLocation) {
@@ -117,8 +117,6 @@ class BaseFragment : Fragment() {
 
                 val currentDateAndTime = sdf.format(Date())
                 binding.myTime.text = currentDateAndTime
-
-                // binding.myAvatar.
             }
 
             is AppStateLocation.EmptyData -> {

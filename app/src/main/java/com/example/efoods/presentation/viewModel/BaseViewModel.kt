@@ -27,7 +27,7 @@ class BaseViewModel() : ViewModel() {
     private val _liveDataLocation: MutableLiveData<AppStateLocation> = MutableLiveData()
     val liveDataLocation: LiveData<AppStateLocation> = _liveDataLocation
 
-    var city = ""
+    private var city = ""
 
     private val onLocationListener = object : LocationListener {
         override fun onLocationChanged(location: android.location.Location) {
