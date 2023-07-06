@@ -5,11 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.Dishe
 import com.example.domain.repository.IMyCardProducts
 import com.example.mycard.presentation.view.list.MyCardDishesList
 import com.example.mycard.presentation.viewModel.appState.AppStateMyCard
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -37,26 +40,9 @@ class MyCardViewModel(
 
             prices[key]?.let { it1 ->
 
-                myCard.update(key.toString(), it1).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        myCard.getAllMyCard()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
-                                myCardDishes.myCardDishes.clear()
-                                myCardDishes.myCardDishes.addAll(it)
-                                _lists.value = AppStateMyCard.OnSuccess(it, myCardDishes)
-
-                                totalPrice(it)
-                            },
-                                {
-                                    _lists.value =
-                                        it.message?.let { it1 -> AppStateMyCard.Error(it1) }
-
-                                })
-                    }, {
-                        _lists.value = it.message?.let { it1 -> AppStateMyCard.Error(it1) }
-                    })
-
+                viewModelScope.launch {
+                    myCard.update(key.toString(), it1)
+                }
             }
         }
 
@@ -68,50 +54,15 @@ class MyCardViewModel(
 
             prices[key]?.let { it1 ->
 
-
                 if (it1 == 0) {
-                    myCard.delete(myCardDishes.myCardDishes[it.pos])
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                            myCard.getAllMyCard()
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({
-                                    myCardDishes.myCardDishes.clear()
-                                    myCardDishes.myCardDishes.addAll(it)
-                                    _lists.value = AppStateMyCard.OnUpdate(myCardDishes)
-
-                                    totalPrice(it)
-                                },
-                                    {
-
-                                        _lists.value =
-                                            it.message?.let { it1 -> AppStateMyCard.Error(it1) }
-                                    })
-                        }, {
-                            _lists.value = it.message?.let { it1 -> AppStateMyCard.Error(it1) }
-                        })
+                    viewModelScope.launch {
+                        myCard.delete(myCardDishes.myCardDishes[it.pos])
+                    }
                 } else {
-
-                    myCard.update(key.toString(), it1).observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            myCard.getAllMyCard()
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({
-                                    myCardDishes.myCardDishes.clear()
-                                    myCardDishes.myCardDishes.addAll(it)
-                                    _lists.value = AppStateMyCard.OnUpdate(myCardDishes)
-
-                                    totalPrice(it)
-                                },
-                                    {
-
-                                        _lists.value =
-                                            it.message?.let { it1 -> AppStateMyCard.Error(it1) }
-                                    })
-                        }, {
-                            _lists.value = it.message?.let { it1 -> AppStateMyCard.Error(it1) }
-                        })
+                    viewModelScope.launch {
+                        myCard.update(key.toString(), it1)
+                    }
                 }
-
             }
         }
 
@@ -120,17 +71,18 @@ class MyCardViewModel(
 
     @SuppressLint("CheckResult")
     private fun getAllDishesFromCard() {
-        myCard.getAllMyCard()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                myCardDishes.myCardDishes.clear()
-                myCardDishes.myCardDishes.addAll(it)
-                totalPrice(it)
-                _lists.value = AppStateMyCard.OnSuccess(myCardDishes.myCardDishes, myCardDishes)
 
-            }, {
-                _lists.value = it.message?.let { it1 -> AppStateMyCard.Error(it1) }
-            })
+        viewModelScope.launch {
+            myCard.getAllMyCard().collect { listOfDishes ->
+
+                withContext(Dispatchers.Main) {
+                    myCardDishes.myCardDishes.clear()
+                    myCardDishes.myCardDishes.addAll(listOfDishes)
+                    totalPrice(listOfDishes)
+                    _lists.value = AppStateMyCard.OnSuccess(myCardDishes.myCardDishes, myCardDishes)
+                }
+            }
+        }
     }
 
     private fun totalPrice(myProducts: List<Dishe>) {
@@ -139,12 +91,10 @@ class MyCardViewModel(
             totalPrice += it.price * it.count
         }
         _lists.value = AppStateMyCard.TotalPrice(totalPrice.toString())
-
     }
 
-
     class Factory @Inject constructor(
-        private val myCard: Provider<IMyCardProducts>
+        private val myCard: Provider<IMyCardProducts>,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -152,5 +102,4 @@ class MyCardViewModel(
             return MyCardViewModel(myCard.get()) as T
         }
     }
-
 }

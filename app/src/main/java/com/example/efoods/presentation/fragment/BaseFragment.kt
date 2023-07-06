@@ -61,50 +61,8 @@ class BaseFragment : Fragment() {
             renderData(it)
         }
 
-        //checkPermission()
-//        childFragmentManager.setFragmentResultListener(KAY_PARENT, this) { _, result ->
-//
-//            var resultFromBundle = result.getString("headerText")
-//
-//            if (resultFromBundle == "location") {
-//                if (city == "") {
-//
-//                    binding.kitchenNameHeader.visibility = View.GONE
-//                    binding.myTime.visibility = View.VISIBLE
-//                    binding.myLocation.visibility = View.VISIBLE
-//
-//                    val sdf = SimpleDateFormat("dd MMMM, yyyy")
-//                    val currentDateAndTime = sdf.format(Date())
-//
-//                    binding.myLocation.text = city
-//                    binding.myTime.text = currentDateAndTime
-//                    binding.backButton.setImageResource(R.drawable.ic_location)
-//                    binding.backButton.setOnClickListener(null)
-//                } else {
-//                    binding.myTime.visibility = View.VISIBLE
-//                    binding.myLocation.visibility = View.VISIBLE
-//                    binding.kitchenNameHeader.visibility = View.GONE
-//
-//                    val sdf = SimpleDateFormat("dd MMMM, yyyy")
-//                    val currentDateAndTime = sdf.format(Date())
-//
-//                    binding.myLocation.text = city
-//                    binding.myTime.text = currentDateAndTime
-//                    binding.backButton.setImageResource(R.drawable.ic_location)
-//                    binding.backButton.setOnClickListener(null)
-//                }
-//            } else {
-//
-//                binding.kitchenNameHeader.visibility = View.VISIBLE
-//                binding.myLocation.visibility = View.GONE
-//                binding.myTime.visibility = View.GONE
-//                binding.backButton.setImageResource(R.drawable.ic_back)
-//
-//                binding.backButton.setOnClickListener(clickListener)
-//
-//                binding.kitchenNameHeader.text = result.getString("headerText")
-//            }
-//        }
+        checkPermission()
+
     }
 
     private fun renderData(it: AppStateLocation) {
@@ -170,6 +128,8 @@ class BaseFragment : Fragment() {
         permissions: Array<out String>,
         grantResults: IntArray,
     ) {
+
+
         when (requestCode) {
             REQUEST_CODE -> {
                 var grantedPermission = 0;

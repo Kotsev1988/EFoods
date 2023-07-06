@@ -13,31 +13,31 @@ import com.example.data.room.dishes.entity.RoomDishes
 interface DishesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(dishes: RoomDishes)
+    suspend fun insert(dishes: RoomDishes)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg dishes: RoomDishes)
+    suspend fun insert(vararg dishes: RoomDishes)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(dishes: List<RoomDishes>)
+    suspend fun insert(dishes: List<RoomDishes>)
 
     @Update
-    fun update(dishes: RoomDishes)
+    suspend fun update(dishes: RoomDishes)
 
     @Update
-    fun update(vararg dishes: RoomDishes)
+    suspend fun update(vararg dishes: RoomDishes)
 
     @Update
-    fun update(dishes: List<RoomDishes>)
+    suspend fun update(dishes: List<RoomDishes>)
 
     @Delete
-    fun delete(dishes: RoomDishes)
+    suspend fun delete(dishes: RoomDishes)
 
     @Delete
-    fun delete(vararg dishes: RoomDishes)
+    suspend fun delete(vararg dishes: RoomDishes)
 
     @Delete
-    fun delete(dishes: List<RoomDishes>)
+   suspend fun delete(dishes: List<RoomDishes>)
 
     @Query("SELECT * FROM RoomDishes")
     fun getAll(): List<RoomDishes>

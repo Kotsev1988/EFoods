@@ -1,9 +1,11 @@
 package com.example.core.network
 
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.flow.Flow
 
 interface INetworkStates {
-    fun isOnline(): Observable<Boolean>
-    fun isOnlineSingle(): Single<Boolean>
+    fun isOnline(): Flow<Status>
+
+    enum class Status{
+        Available, UnAvailable, Losing, Lost
+    }
 }

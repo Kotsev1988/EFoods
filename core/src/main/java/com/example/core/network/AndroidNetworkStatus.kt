@@ -3,37 +3,59 @@ package com.example.core.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 class AndroidNetworkStatus(context: Context): INetworkStates{
 
-    private val statusObject : BehaviorSubject<Boolean> = BehaviorSubject.create()
+    private val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    init {
-        statusObject.onNext(false)
-        val connectivityManger = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val request = NetworkRequest.Builder().build()
+    private val request: NetworkRequest = NetworkRequest.Builder()
+        .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        .build()
 
-        connectivityManger.registerNetworkCallback(request, object :
-            ConnectivityManager.NetworkCallback() {
+    override fun isOnline(): Flow<INetworkStates.Status> {
+        return callbackFlow {
+            val networkStatusCallback = object : ConnectivityManager.NetworkCallback() {
 
-            override fun onAvailable(network: Network) {
-                statusObject.onNext(true)
+
+                override fun onUnavailable() {
+                    super.onUnavailable()
+
+                    launch { send(INetworkStates.Status.UnAvailable) }
+                }
+
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    launch { send(INetworkStates.Status.Available) }
+                }
+
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    launch { send(INetworkStates.Status.Lost) }
+                }
+
+                override fun onLosing(network: Network, maxMsToLive: Int) {
+                    super.onLosing(network, maxMsToLive)
+                    launch { send(INetworkStates.Status.Losing) }
+                }
+
+            }
+            connectivityManager.registerNetworkCallback(request, networkStatusCallback)
+            if (connectivityManager.activeNetwork == null){
+                trySend((INetworkStates.Status.UnAvailable) )
             }
 
-            override fun onUnavailable() {
-                statusObject.onNext(false)
+            awaitClose {
+                connectivityManager.unregisterNetworkCallback(networkStatusCallback)
             }
-
-            override fun onLost(network: Network) {
-                statusObject.onNext(false)
-            }
-
-        })
+        }.distinctUntilChanged()
     }
 
-    override fun isOnline() = statusObject
-
-    override fun isOnlineSingle() = statusObject.first(false)
 }

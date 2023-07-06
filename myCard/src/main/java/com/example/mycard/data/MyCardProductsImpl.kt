@@ -3,27 +3,32 @@ package com.example.mycard.data
 import com.example.data.room.Database
 import com.example.domain.entity.Dishe
 import com.example.domain.repository.IMyCardProducts
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class MyCardProductsImpl(private val db: Database): IMyCardProducts {
-    override fun getAllMyCard(): Single<List<Dishe>> = Single.fromCallable {
-        db.myCardDao.getAll().map {
-            Dishe(
-                it.description,
-                it.id,
-                it.image_url,
-                it.name,
-                it.price,
-                it.tegs,
-                it.weight,
-                it.count
-            )
-        }
-    }.subscribeOn(Schedulers.io())
+        override suspend fun getAllMyCard(): Flow<List<Dishe>> {
+          val listFromCard = db.myCardDao.getAll().map{
+              it.map { roomMyCard ->
+                  Dishe(
+                      roomMyCard.description,
+                      roomMyCard.id,
+                      roomMyCard.image_url,
+                      roomMyCard.name,
+                      roomMyCard.price,
+                      roomMyCard.tegs,
+                      roomMyCard.weight,
+                      roomMyCard.count
+                  )
+              }
 
-    override fun insertProductToMyCard(dishe: Dishe): Single<Dishe> = Single.fromCallable {
+          }
+            return listFromCard
+        }
+
+
+
+    override suspend fun insertProductToMyCard(dishe: Dishe){
 
         val dishesRoom = com.example.data.room.mycard.entity.RoomMyCard(
             dishe.description,
@@ -37,19 +42,19 @@ class MyCardProductsImpl(private val db: Database): IMyCardProducts {
         )
 
         db.myCardDao.insert(dishesRoom)
-        dishe
-    }.subscribeOn(Schedulers.io())
 
 
-    override fun isContain(id: Int): Single<Boolean> = Single.fromCallable {
+    }
+
+    override suspend fun isContain(id: Int): Boolean =
         db.myCardDao.isContain(id)
-    }.subscribeOn(Schedulers.io())
 
-    override fun update(id: String, count: Int): Completable = Completable.fromCallable {
+
+    override suspend fun update(id: String, count: Int)=
         db.myCardDao.updateCount(id, count)
-    }.subscribeOn(Schedulers.io())
 
-    override fun delete(dishe: Dishe): Completable  = Completable.fromCallable {
+
+    override suspend fun delete(dishe: Dishe) {
         val roomMyCard = com.example.data.room.mycard.entity.RoomMyCard(
             dishe.description,
             dishe.id,
@@ -61,12 +66,12 @@ class MyCardProductsImpl(private val db: Database): IMyCardProducts {
             dishe.count
         )
         db.myCardDao.delete(roomMyCard)
-    }.subscribeOn(Schedulers.io())
+    }
 
-    override fun getDishById(id: Int): Single<Dishe>  = Single.fromCallable {
+    override suspend fun getDishById(id: Int): Dishe    {
         val dishRoom = db.myCardDao.findDishById(id)
 
-        Dishe(
+       return Dishe(
             dishRoom.description,
             dishRoom.id,
             dishRoom.image_url,
@@ -76,7 +81,6 @@ class MyCardProductsImpl(private val db: Database): IMyCardProducts {
             dishRoom.weight,
             0
         )
-    }.subscribeOn(Schedulers.io())
-
+    }
 
 }

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
@@ -20,11 +19,11 @@ import com.example.category.presentation.adapters.menus.CategoriesDelegate
 import com.example.category.presentation.adapters.menus.CategoriesDelegateAdapter
 import com.example.category.presentation.viewmodel.CategoryViewModel
 import com.example.category.presentation.viewmodel.appState.CategoryAppState
+import com.example.domain.entity.Menus
 import javax.inject.Inject
 
-const val KAY_PARENT = "key_parent"
-
 const val KAY_PARENT_DIALOG = "key_parent_dialog"
+
 class CategoryFragment : Fragment() {
     private var _binding: FragmentCategoryBinding? = null
     private val binding get() = _binding!!
@@ -43,8 +42,6 @@ class CategoryFragment : Fragment() {
         viewModelFactory.get()
     }
 
-
-
     override fun onAttach(context: Context) {
         ViewModelProvider(this).get<ArticlesComponentViewModel>()
             .newDetailsComponent.inject(this)
@@ -61,11 +58,6 @@ class CategoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-
-        val id = arguments?.getString("metadataFileSyncFilter")
-        val bundleBaseFrag = Bundle()
-        bundleBaseFrag.putString("headerText", id)
-        parentFragment?.setFragmentResult(KAY_PARENT, bundleBaseFrag)
 
         _binding = FragmentCategoryBinding.inflate(inflater)
         return binding.root
@@ -87,12 +79,12 @@ class CategoryFragment : Fragment() {
     private fun renderData(it: CategoryAppState) {
 
         when (it) {
-            is CategoryAppState.OnSuccess ->{
-                val menu = com.example.domain.entity.Menus(arrayListOf())
+            is CategoryAppState.OnSuccess -> {
+                val menu = Menus(arrayListOf())
                 menu.dishes.addAll(it.dishes)
 
 
-              val  listDelegates = listOf(
+                val listDelegates = listOf(
                     CategoriesDelegate(it.menuCategory, it.listMenu),
                     DishesDelegate(menu, it.listDishes),
                 )
@@ -102,11 +94,11 @@ class CategoryFragment : Fragment() {
                 binding.frameLoadDishes.visibility = View.GONE
             }
 
-            is CategoryAppState.SetDishes ->{
-                val menu = com.example.domain.entity.Menus(arrayListOf())
+            is CategoryAppState.SetDishes -> {
+                val menu = Menus(arrayListOf())
                 menu.dishes.addAll(it.dishes)
 
-                val  listDelegates = listOf(
+                val listDelegates = listOf(
 
                     CategoriesDelegate(it.menuCategory, it.listMenu),
                     DishesDelegate(menu, it.listDishes),
@@ -115,12 +107,25 @@ class CategoryFragment : Fragment() {
                 mainAdapter.submitList(listDelegates)
             }
 
-            is CategoryAppState.Error ->{
+            is CategoryAppState.Error -> {
                 Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
             }
 
-            is CategoryAppState.ShowDialogFragment ->{
+            is CategoryAppState.ShowDialogFragment -> {
                 showFragmentDialog(it.dish)
+            }
+
+            is CategoryAppState.UnAvailable -> {
+                Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
+            }
+
+            is CategoryAppState.Losing -> {
+                Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
+            }
+
+            is CategoryAppState.Lost -> {
+                Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT).show()
+                viewModel.loadDishesFromCache()
             }
         }
     }
@@ -132,7 +137,4 @@ class CategoryFragment : Fragment() {
         fragmentDialog.show(this.childFragmentManager, "tag")
 
     }
-
-
-
 }

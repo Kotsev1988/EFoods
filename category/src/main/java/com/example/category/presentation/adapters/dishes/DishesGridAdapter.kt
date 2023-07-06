@@ -1,16 +1,16 @@
 package com.example.category.presentation.adapters.dishes
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.category.databinding.ItemFoodBinding
-import com.example.category.presentation.view.lists.IDishesList
 import com.example.category.presentation.view.IDishItemView
+import com.example.category.presentation.view.lists.IDishesList
 
 class DishesGridAdapter(private val dishesList: IDishesList) :
     RecyclerView.Adapter<DishesGridAdapter.DishesViewHolder>() {
-
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -44,8 +44,7 @@ class DishesGridAdapter(private val dishesList: IDishesList) :
         }
 
         override fun setImage(url: String) {
-
-            Glide.with(binding.foodImage.context).load(url).into(binding.foodImage)
+            Glide.with(binding.foodImage.context).load(Uri.parse(url)).into(binding.foodImage)
         }
 
         override var pos: Int = -1

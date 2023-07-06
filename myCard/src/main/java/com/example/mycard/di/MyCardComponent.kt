@@ -15,16 +15,17 @@ import kotlin.properties.Delegates
 interface MyCardComponent {
 
     interface MyCardDeps {
-       val myCard: IMyCardProducts
+        val myCard: IMyCardProducts
     }
 
     fun inject(myCardFragment: MyCardFragment)
 }
 
-interface  MyCardDepsProvider {
+interface MyCardDepsProvider {
 
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
     val myCard: MyCardComponent.MyCardDeps
+
     companion object : MyCardDepsProvider by ArticlesMyCard
 }
 
@@ -35,7 +36,8 @@ object ArticlesMyCard : MyCardDepsProvider {
 
 internal class ArticlesComponentMyCardViewModel : ViewModel() {
 
-    val newDetailsMyCardComponent =  DaggerMyCardComponent.builder().myCardDeps(MyCardDepsProvider.myCard).build()
+    val newDetailsMyCardComponent =
+        DaggerMyCardComponent.builder().myCardDeps(MyCardDepsProvider.myCard).build()
 
 }
 

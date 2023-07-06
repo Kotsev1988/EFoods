@@ -1,10 +1,10 @@
 package com.example.efoods.presentation.viewModel
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
@@ -12,11 +12,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.efoods.App
 import com.example.efoods.presentation.viewModel.appState.AppStateLocation
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.io.IOException
 
 private const val REFRESH_PERIOD = 60000L
@@ -30,9 +29,12 @@ class BaseViewModel() : ViewModel() {
     private var city = ""
 
     private val onLocationListener = object : LocationListener {
-        override fun onLocationChanged(location: android.location.Location) {
+        override fun onLocationChanged(location: Location) {
             App.instance.getAppContext().let {
-                getAddressAsync(it, location)
+                viewModelScope.launch {
+                    getAddressAsync(it, location)
+                }
+
             }
         }
 
@@ -50,6 +52,8 @@ class BaseViewModel() : ViewModel() {
     }
 
     fun getLocation() {
+
+     //  LocationServices.getFusedLocationProviderClient(App.instance.getAppContext())
 
         App.instance.getAppContext().let { context ->
             if (ContextCompat.checkSelfPermission(
@@ -77,7 +81,10 @@ class BaseViewModel() : ViewModel() {
                     if (location == null) {
                         _liveDataLocation.value = AppStateLocation.EmptyData("Empty")
                     } else {
-                        getAddressAsync(context, location)
+                        viewModelScope.launch {
+                            getAddressAsync(context, location)
+                        }
+
                     }
                 }
             } else {
@@ -86,12 +93,12 @@ class BaseViewModel() : ViewModel() {
         }
     }
 
-    @SuppressLint("CheckResult")
-    private fun getAddressAsync(context: Context, location: android.location.Location) {
+
+     fun getAddressAsync(context: Context, location: Location) {
 
         val geoCoder = Geocoder(context)
 
-        Completable.fromCallable {
+
             try {
                 val addresses = geoCoder.getFromLocation(
                     location.latitude,
@@ -100,18 +107,14 @@ class BaseViewModel() : ViewModel() {
                 )
                 val cityName = addresses?.get(0)?.locality
                 city = cityName.toString()
-
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
                 _liveDataLocation.value = AppStateLocation.Success(city)
 
+            } catch (e: IOException) {
 
-            }, {
-                _liveDataLocation.value = AppStateLocation.Error(it)
-            })
+                //_liveDataLocation.value = AppStateLocation.Error(it)
+
+
+        }
+
     }
 }

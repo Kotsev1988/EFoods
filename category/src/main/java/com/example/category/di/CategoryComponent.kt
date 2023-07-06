@@ -8,6 +8,8 @@ import com.example.category.presentation.adapters.dishes.DishesGridAdapter
 import com.example.category.presentation.adapters.menus.CategoryHorizontalAdapter
 import com.example.category.presentation.fragments.CategoryFragment
 import com.example.category.presentation.fragments.DetailFragment
+import com.example.core.network.INetworkStates
+import com.example.data.room.cache.IDishesCache
 import com.example.domain.repository.IGetDishes
 import com.example.domain.repository.IMyCardProducts
 
@@ -26,6 +28,8 @@ interface CategoryComponent {
         val newsService: IFoodAPI
         val dishes: IGetDishes
         val myCard: IMyCardProducts
+        val networkStatus: INetworkStates
+        val productCache: IDishesCache
     }
 
     fun inject(categoryFragment: CategoryFragment)

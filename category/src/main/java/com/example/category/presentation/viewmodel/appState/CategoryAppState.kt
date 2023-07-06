@@ -23,4 +23,12 @@ sealed class CategoryAppState {
 
     data class Error(val error: String) : CategoryAppState()
     data class ShowDialogFragment(val dish: Dishe) : CategoryAppState()
+
+    data class UnAvailable(val error: String) : CategoryAppState()
+
+    data class Losing(val error: String) : CategoryAppState()
+
+    data class Lost(val error: String) : CategoryAppState()
+
+
 }

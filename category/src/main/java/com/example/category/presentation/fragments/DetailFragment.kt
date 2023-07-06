@@ -36,7 +36,6 @@ class DetailFragment : DialogFragment() {
         viewModelFactory.get()
     }
 
-
     override fun onAttach(context: Context) {
         ViewModelProvider(this).get<ArticlesComponentViewModel>()
             .newDetailsComponent.inject(this)
